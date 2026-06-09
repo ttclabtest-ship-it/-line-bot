@@ -14,115 +14,111 @@ from linebot.v3.messaging import (
 
 app = FastAPI()
 
-# ============================
-# ตั้งค่า API Keys
-# ============================
 LINE_CHANNEL_ACCESS_TOKEN = os.environ.get("LINE_CHANNEL_ACCESS_TOKEN", "")
 LINE_CHANNEL_SECRET = os.environ.get("LINE_CHANNEL_SECRET", "")
 GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "")
 
+print(f"[STARTUP] TOKEN={len(LINE_CHANNEL_ACCESS_TOKEN)} SECRET={len(LINE_CHANNEL_SECRET)} GROQ={len(GROQ_API_KEY)}")
+
 configuration = Configuration(access_token=LINE_CHANNEL_ACCESS_TOKEN)
 handler = WebhookHandler(LINE_CHANNEL_SECRET)
-
 groq_client = Groq(api_key=GROQ_API_KEY)
 
-# ============================
-# ข้อมูล Q&A คำร้องนักศึกษา
-# ภาควิชาครุศาสตร์โยธา มจพ.
-# ============================
 QA_DATA = """
 ถาม: ลงทะเบียนได้กี่หน่วยกิต?
 ตอบ: นักศึกษาปกติลงทะเบียนได้ไม่ต่ำกว่า 9 หน่วยกิต และไม่เกิน 22 หน่วยกิต
 
-ถาม: ภาคฤดูร้อน (Summer) ลงทะเบียนได้กี่หน่วยกิต?
+ถาม: ภาคฤดูร้อน ลงทะเบียนได้กี่หน่วยกิต?
 ตอบ: ลงทะเบียนได้ไม่ต่ำกว่า 9 หน่วยกิต
 
 ถาม: เริ่มลงทะเบียน เพิ่ม ถอน เปลี่ยนตอน ได้เมื่อไหร่?
 ตอบ: ภายใน 3 สัปดาห์นับตั้งแต่วันเปิดเทอม
 
 ถาม: ถอนวิชาเรียนได้ถึงเมื่อไหร่?
-ตอบ: ภายใน 12 สัปดาห์หลังจากเปิดเรียน (หลังทราบคะแนนสอบกลางภาค ภายใน 1 สัปดาห์)
+ตอบ: ภายใน 12 สัปดาห์หลังจากเปิดเรียน
 
-ถาม: ค่าเทอมหรือค่าลงทะเบียนหลักสูตรเสริมทักษะ ต้องจ่ายเท่าไหร่?
-ตอบ: เหมาจ่าย 25,000 บาท ต่อภาคเรียน (หลักสูตร 5 ปี จ่าย 10 เทอม)
+ถาม: ค่าเทอมเสริมทักษะ ต้องจ่ายเท่าไหร่?
+ตอบ: เหมาจ่าย 25,000 บาท ต่อภาคเรียน
 
-ถาม: ค่าลงทะเบียนภาคฤดูร้อน (Summer) ต้องจ่ายเท่าไหร่?
+ถาม: ค่าลงทะเบียนภาคฤดูร้อน ต้องจ่ายเท่าไหร่?
 ตอบ: เหมาจ่าย 5,000 บาท ต่อภาคเรียน
 
-ถาม: นักศึกษาชั้นปี 6 ขึ้นไป จ่ายค่าลงทะเบียนเท่าไหร่?
+ถาม: นักศึกษาชั้นปี 6 จ่ายค่าลงทะเบียนเท่าไหร่?
 ตอบ: เหมาจ่าย 6,000 บาท ต่อภาคเรียน
 
 ถาม: ลงทะเบียนเกินหน่วยกิตสูงสุดได้เท่าไหร่?
-ตอบ: ไม่เกิน 23 หน่วยกิต โดยต้องยื่นคำร้องในระบบ Reg KMUTNB ตามช่วงปฏิทินการศึกษา (กรณีสูง/ต่ำกว่าเกณฑ์ที่กำหนด ทั้งปกติและวิทยาทัณฑ์)
-
-ถาม: เหลือลงทะเบียนเก็บวิชาเรียน 1 รายวิชา ต้องลงทะเบียนอย่างไร?
-ตอบ: ยื่นคำร้องในระบบ Reg KMUTNB ลงทะเบียนตามช่วงปฏิทินการศึกษา กรณีสูง/ต่ำกว่าเกณฑ์ที่กำหนด (ปกติและวิทยาทัณฑ์)
+ตอบ: ไม่เกิน 23 หน่วยกิต โดยต้องยื่นคำร้องในระบบ Reg KMUTNB
 
 ถาม: ไม่มีวิชาเรียนในภาคเรียนนี้ ต้องทำอย่างไร?
-ตอบ: ต้องยื่นคำร้องในระบบ Reg KMUTNB ขอลาพักการเรียน โดยระบุเหตุผลว่า "เนื่องจากไม่มีรายวิชาที่ต้องลงทะเบียนในเทอมนี้"
+ตอบ: ต้องยื่นคำร้องในระบบ Reg KMUTNB ขอลาพักการเรียน
 
 ถาม: ขอกลับเข้าศึกษาต่อ ต้องยื่นคำร้องเมื่อไหร่?
-ตอบ: ยื่นก่อนวันลงทะเบียนของเทอมที่นักศึกษาจะกลับมาเรียน 1-2 สัปดาห์ และเมื่อคำร้องได้รับการอนุมัติแล้วจึงจะลงทะเบียนได้
+ตอบ: ยื่นก่อนวันลงทะเบียน 1-2 สัปดาห์
 
 ถาม: ขอผ่อนผันค่าลงทะเบียนได้ถึงเมื่อไหร่?
 ตอบ: วันสุดท้ายของการลงทะเบียนล่าช้าตามปฏิทินการศึกษา หรือก่อนสอบกลางภาค
 
-ถาม: ตารางสอบชนกัน ลงทะเบียนไม่ได้ต้องทำยังไง?
-ตอบ: ยื่นคำร้องในระบบ Reg KMUTNB เพิ่มวิชาเรียนล่าช้า (ก่อนสอบปลายภาค) กรณีวัน-เวลาสอบซ้ำซ้อน
+ถาม: ตารางสอบชนกัน ต้องทำยังไง?
+ตอบ: ยื่นคำร้องในระบบ Reg KMUTNB เพิ่มวิชาเรียนล่าช้า
 
 ถาม: ไม่ได้ชำระเงินค่าลงทะเบียนตามกำหนด ต้องทำยังไง?
 ตอบ: ยื่นคำร้องในระบบ Reg KMUTNB ผ่อนผันการลงทะเบียนและชำระเงินล่าช้ากรณีพิเศษ
 """
 
-SYSTEM_PROMPT = f"""คุณคือผู้ช่วยสำหรับนักศึกษาภาควิชาครุศาสตร์โยธา มจพ. (KMUTNB)
+SYSTEM_PROMPT = f"""คุณคือผู้ช่วยสำหรับนักศึกษาภาควิชาครุศาสตร์โยธา มจพ.
 ตอบคำถามเกี่ยวกับการลงทะเบียนเรียนโดยใช้ข้อมูลด้านล่างเท่านั้น
 ตอบเป็นภาษาไทย กระชับ ชัดเจน และเป็นมิตร
 หากคำถามไม่เกี่ยวข้องกับข้อมูลที่มี ให้แนะนำให้ติดต่อเจ้าหน้าที่โดยตรง
 
-ข้อมูลที่มี:
-{QA_DATA}
-"""
+ข้อมูล:
+{QA_DATA}"""
 
-# ============================
-# Webhook Endpoint
-# ============================
+
 @app.post("/webhook")
 async def webhook(request: Request):
-    signature = request.headers.get("X-Line-Signature", "")
-    body = await request.body()
-    try:
-        handler.handle(body.decode("utf-8"), signature)
-    except InvalidSignatureError:
+        signature = request.headers.get("X-Line-Signature", "")
+        body = await request.body()
+        try:
+                    handler.handle(body.decode("utf-8"), signature)
+except InvalidSignatureError:
         raise HTTPException(status_code=400, detail="Invalid signature")
+except Exception as e:
+        print(f"[HANDLER ERROR] {type(e).__name__}: {e}")
     return "OK"
 
 
 @handler.add(MessageEvent, message=TextMessageContent)
 def handle_message(event):
-    user_message = event.message.text
-    try:
-        response = groq_client.chat.completions.create(
-            model="llama-3.1-8b-instant",
-            messages=[
-                {"role": "system", "content": SYSTEM_PROMPT},
-                {"role": "user", "content": user_message}
-            ]
-        )
-        reply_text = response.choices[0].message.content.strip()
-    except Exception as e:
+        user_message = event.message.text
+        print(f"[MSG] {user_message}")
+        try:
+                    response = groq_client.chat.completions.create(
+                                    model="llama-3.1-8b-instant",
+                                    messages=[
+                                                        {"role": "system", "content": SYSTEM_PROMPT},
+                                                        {"role": "user", "content": user_message}
+                                    ]
+                    )
+                    reply_text = response.choices[0].message.content.strip()
+                    print(f"[GROQ OK] {reply_text[:50]}")
+except Exception as e:
         print(f"[GROQ ERROR] {type(e).__name__}: {e}")
         reply_text = "ขออภัยครับ เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง หรือติดต่อเจ้าหน้าที่โดยตรง"
 
-        with ApiClient(configuration) as api_client:
-                    line_bot_api = MessagingApi(api_client)
-                    line_bot_api.reply_message(
+    try:
+                with ApiClient(configuration) as api_client:
+                                line_bot_api = MessagingApi(api_client)
+                                line_bot_api.reply_message(
                                     ReplyMessageRequest(
-                                                        reply_token=event.reply_token,
-                                                        messages=[TextMessage(text=reply_text)]
+                                        reply_token=event.reply_token,
+                                        messages=[TextMessage(text=reply_text)]
                                     )
-                    )
+                                )
+                            print("[LINE] Reply sent OK")
+except Exception as e:
+        print(f"[LINE ERROR] {type(e).__name__}: {e}")
 
 
 @app.get("/")
 def root():
-    return {"status": "LINE Chatbot is running!"}
+        return {"status": "LINE Chatbot is running with Groq!"}
