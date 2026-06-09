@@ -1,4 +1,4 @@
 fastapi
 uvicorn
-line-bot-sdk
+line-bot-sdk>=2.0,<3.0
 groq
