@@ -31,38 +31,44 @@ QA_DATA = """
 ถาม: ภาคฤดูร้อน ลงทะเบียนได้กี่หน่วยกิต?
 ตอบ: ลงทะเบียนได้ไม่ต่ำกว่า 9 หน่วยกิต
 
-ถาม: เริ่มลงทะเบียน เพิ่ม ถอน เปลี่ยนตอน ได้เมื่อไหร่?
-ตอบ: ภายใน 3 สัปดาห์นับตั้งแต่วันเปิดเทอม
+ถาม: ถ้าต้องการลงทะเบียนน้อยกว่าเกณฑ์ต้องทำอย่างไร?
+ตอบ: ยื่นคำร้องที่ว่าการ ลงนามอาจารย์ที่ปรึกษา
 
-ถาม: ถอนวิชาเรียนได้ถึงเมื่อไหร่?
-ตอบ: ภายใน 12 สัปดาห์หลังจากเปิดเรียน
+ถาม: ลงทะเบียนเพิ่มถอนทำได้ช่วงไหน?
+ตอบ: ภายใน 3 สัปดาห์นับตั้งแต่เปิดเทอม
 
-ถาม: ค่าเทอมเสริมทักษะ ต้องจ่ายเท่าไหร่?
-ตอบ: เหมาจ่าย 25,000 บาท ต่อภาคเรียน
+ถาม: ค่าลงทะเบียนสำหรับนักศึกษาปกติต้องชำระเท่าไร?
+ตอบ: ชำระ 25,000 บาท ต่อภาคการศึกษา
 
-ถาม: ค่าลงทะเบียนภาคฤดูร้อน ต้องจ่ายเท่าไหร่?
-ตอบ: เหมาจ่าย 5,000 บาท ต่อภาคเรียน
+ถาม: ค่าลงทะเบียนสำหรับนักศึกษาภาคฤดูร้อนต้องชำระเท่าไร?
+ตอบ: ชำระ 5,000 บาท ต่อภาคการศึกษา
 
-ถาม: นักศึกษาชั้นปี 6 จ่ายค่าลงทะเบียนเท่าไหร่?
-ตอบ: เหมาจ่าย 6,000 บาท ต่อภาคเรียน
+ถาม: นักศึกษาเรียนมาแล้ว 6 ปีแต่ยังลงทะเบียนไม่ครบ ยังสามารถลงทะเบียนได้ไหม?
+ตอบ: ได้ครับ 6,000 บาท ต่อภาคการศึกษา
 
-ถาม: ลงทะเบียนเกินหน่วยกิตสูงสุดได้เท่าไหร่?
-ตอบ: ไม่เกิน 23 หน่วยกิต โดยต้องยื่นคำร้องในระบบ Reg KMUTNB
+ถาม: ลงทะเบียนเกินกว่าจำนวนหน่วยกิตที่กำหนดสูงสุดได้ไหม?
+ตอบ: ทำได้ภายใน 23 หน่วยกิต โดยต้องมีเกรดเฉลี่ยสะสมตั้งแต่ 3.00 ขึ้นไป Reg KMUTNB
 
-ถาม: ไม่มีวิชาเรียนในภาคเรียนนี้ ต้องทำอย่างไร?
-ตอบ: ต้องยื่นคำร้องในระบบ Reg KMUTNB ขอลาพักการเรียน
+ถาม: ถ้าเพิ่งเข้าศึกษาและต้องการลงทะเบียนก่อนกำหนดทำได้ไหม?
+ตอบ: ตรวจสอบวันลงทะเบียน Reg KMUTNB ตามกำหนดการประจำปีการศึกษา
 
-ถาม: ขอกลับเข้าศึกษาต่อ ต้องยื่นคำร้องเมื่อไหร่?
-ตอบ: ยื่นก่อนวันลงทะเบียน 1-2 สัปดาห์
+ถาม: ถ้าต้องการลงทะเบียนผ่านระบบออนไลน์ต้องทำอย่างไร?
+ตอบ: เข้าไปที่ Reg KMUTNB ที่ reg.kmutnb.ac.th
 
-ถาม: ขอผ่อนผันค่าลงทะเบียนได้ถึงเมื่อไหร่?
-ตอบ: วันสุดท้ายของการลงทะเบียนล่าช้าตามปฏิทินการศึกษา หรือก่อนสอบกลางภาค
+ถาม: ถ้าลงทะเบียนช้าต้องเสียค่าปรับไหม?
+ตอบ: ต้องเสียค่าปรับ 1-2 สัปดาห์
 
-ถาม: ตารางสอบชนกัน ต้องทำยังไง?
-ตอบ: ยื่นคำร้องในระบบ Reg KMUTNB เพิ่มวิชาเรียนล่าช้า
+ถาม: ถ้าต้องการจบการศึกษาต้องลงทะเบียนวิชาอะไรบ้าง?
+ตอบ: ต้องลงทะเบียนครบทุกวิชาตามหลักสูตรรวมถึงวิชา Senior Project หรือ Thesis ตามสาขาที่เรียน
 
-ถาม: ไม่ได้ชำระเงินค่าลงทะเบียนตามกำหนด ต้องทำยังไง?
-ตอบ: ยื่นคำร้องในระบบ Reg KMUTNB ผ่อนผันการลงทะเบียนและชำระเงินล่าช้ากรณีพิเศษ
+ถาม: วิชาเลือกเสรีสามารถลงทะเบียนวิชาจากภาควิชาอื่นได้ไหม?
+ตอบ: ได้ครับ แต่ต้องตรวจสอบว่าวิชานั้นนับเป็นวิชาเลือกเสรีในหลักสูตรของคุณหรือไม่
+
+ถาม: ถ้าต้องการยกเลิกรายวิชาต้องทำอย่างไร?
+ตอบ: ต้องยื่นคำร้องผ่านระบบ Reg KMUTNB ภายในระยะเวลาที่กำหนด
+
+ถาม: ถ้าลงทะเบียนผิดพลาดต้องแก้ไขอย่างไร?
+ตอบ: ติดต่อสำนักทะเบียนและประมวลผล Reg KMUTNB ตามระยะเวลาที่กำหนดไว้ในปฏิทินการศึกษา
 """
 
 SYSTEM_PROMPT = f"""คุณคือผู้ช่วยสำหรับนักศึกษาภาควิชาครุศาสตร์โยธา มจพ.
@@ -76,49 +82,49 @@ SYSTEM_PROMPT = f"""คุณคือผู้ช่วยสำหรับน
 
 @app.post("/webhook")
 async def webhook(request: Request):
-        signature = request.headers.get("X-Line-Signature", "")
-        body = await request.body()
-        try:
-                    handler.handle(body.decode("utf-8"), signature)
-except InvalidSignatureError:
+    signature = request.headers.get("X-Line-Signature", "")
+    body = await request.body()
+    try:
+        handler.handle(body.decode("utf-8"), signature)
+    except InvalidSignatureError:
         raise HTTPException(status_code=400, detail="Invalid signature")
-except Exception as e:
+    except Exception as e:
         print(f"[HANDLER ERROR] {type(e).__name__}: {e}")
     return "OK"
 
 
 @handler.add(MessageEvent, message=TextMessageContent)
 def handle_message(event):
-        user_message = event.message.text
-        print(f"[MSG] {user_message}")
-        try:
-                    response = groq_client.chat.completions.create(
-                                    model="llama-3.1-8b-instant",
-                                    messages=[
-                                                        {"role": "system", "content": SYSTEM_PROMPT},
-                                                        {"role": "user", "content": user_message}
-                                    ]
-                    )
-                    reply_text = response.choices[0].message.content.strip()
-                    print(f"[GROQ OK] {reply_text[:50]}")
-except Exception as e:
+    user_message = event.message.text
+    print(f"[MSG] {user_message}")
+    try:
+        response = groq_client.chat.completions.create(
+            model="llama-3.1-8b-instant",
+            messages=[
+                {"role": "system", "content": SYSTEM_PROMPT},
+                {"role": "user", "content": user_message}
+            ]
+        )
+        reply_text = response.choices[0].message.content.strip()
+        print(f"[GROQ OK] {reply_text[:50]}")
+    except Exception as e:
         print(f"[GROQ ERROR] {type(e).__name__}: {e}")
         reply_text = "ขออภัยครับ เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง หรือติดต่อเจ้าหน้าที่โดยตรง"
 
     try:
-                with ApiClient(configuration) as api_client:
-                                line_bot_api = MessagingApi(api_client)
-                                line_bot_api.reply_message(
-                                    ReplyMessageRequest(
-                                        reply_token=event.reply_token,
-                                        messages=[TextMessage(text=reply_text)]
-                                    )
-                                )
-                            print("[LINE] Reply sent OK")
-except Exception as e:
+        with ApiClient(configuration) as api_client:
+            line_bot_api = MessagingApi(api_client)
+            line_bot_api.reply_message(
+                ReplyMessageRequest(
+                    reply_token=event.reply_token,
+                    messages=[TextMessage(text=reply_text)]
+                )
+            )
+        print("[LINE] Reply sent OK")
+    except Exception as e:
         print(f"[LINE ERROR] {type(e).__name__}: {e}")
 
 
 @app.get("/")
 def root():
-        return {"status": "LINE Chatbot is running with Groq!"}
+    return {"status": "LINE Chatbot is running with Groq!"}
