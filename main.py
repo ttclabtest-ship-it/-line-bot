@@ -1,5 +1,5 @@
 import os
-import google.generativeai as genai
+from google import genai
 from fastapi import FastAPI, Request, HTTPException
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
@@ -17,8 +17,7 @@ GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
 line_bot_api = LineBotApi(LINE_CHANNEL_ACCESS_TOKEN)
 handler = WebhookHandler(LINE_CHANNEL_SECRET)
 
-genai.configure(api_key=GEMINI_API_KEY)
-model = genai.GenerativeModel("gemini-2.0-flash")
+gemini_client = genai.Client(api_key=GEMINI_API_KEY)
 
 # ============================
 # ข้อมูล Q&A คำร้องนักศึกษา
@@ -82,33 +81,34 @@ SYSTEM_PROMPT = f"""คุณคือผู้ช่วยสำหรับน
 # ============================
 @app.post("/webhook")
 async def webhook(request: Request):
-    signature = request.headers.get("X-Line-Signature", "")
-    body = await request.body()
-    try:
-        handler.handle(body.decode("utf-8"), signature)
-    except InvalidSignatureError:
+        signature = request.headers.get("X-Line-Signature", "")
+        body = await request.body()
+        try:
+                    handler.handle(body.decode("utf-8"), signature)
+except InvalidSignatureError:
         raise HTTPException(status_code=400, detail="Invalid signature")
     return "OK"
 
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
-    user_message = event.message.text
-    try:
-        response = model.generate_content(
-            f"{SYSTEM_PROMPT}\n\nคำถามของนักศึกษา: {user_message}"
-        )
-        reply_text = response.text.strip()
-    except Exception as e:
+        user_message = event.message.text
+        try:
+                    response = gemini_client.models.generate_content(
+                                    model="gemini-2.0-flash",
+                                    contents=f"{SYSTEM_PROMPT}\n\nคำถามของนักศึกษา: {user_message}"
+                    )
+                    reply_text = response.text.strip()
+except Exception as e:
         print(f"[GEMINI ERROR] {type(e).__name__}: {e}")
         reply_text = "ขออภัยครับ เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง หรือติดต่อเจ้าหน้าที่โดยตรง"
 
     line_bot_api.reply_message(
-        event.reply_token,
-        TextSendMessage(text=reply_text)
+                event.reply_token,
+                TextSendMessage(text=reply_text)
     )
 
 
 @app.get("/")
 def root():
-    return {"status": "LINE Chatbot is running!"}
+        return {"status": "LINE Chatbot is running!"}
