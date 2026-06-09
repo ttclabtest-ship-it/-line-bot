@@ -100,6 +100,7 @@ def handle_message(event):
         )
         reply_text = response.text.strip()
     except Exception as e:
+        print(f"[GEMINI ERROR] {type(e).__name__}: {e}")
         reply_text = "ขออภัยครับ เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง หรือติดต่อเจ้าหน้าที่โดยตรง"
 
     line_bot_api.reply_message(
