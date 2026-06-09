@@ -1,5 +1,5 @@
 import os
-from google import genai
+from groq import Groq
 from fastapi import FastAPI, Request, HTTPException
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
@@ -12,12 +12,12 @@ app = FastAPI()
 # ============================
 LINE_CHANNEL_ACCESS_TOKEN = os.environ.get("LINE_CHANNEL_ACCESS_TOKEN", "")
 LINE_CHANNEL_SECRET = os.environ.get("LINE_CHANNEL_SECRET", "")
-GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
+GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "")
 
 line_bot_api = LineBotApi(LINE_CHANNEL_ACCESS_TOKEN)
 handler = WebhookHandler(LINE_CHANNEL_SECRET)
 
-gemini_client = genai.Client(api_key=GEMINI_API_KEY)
+groq_client = Groq(api_key=GROQ_API_KEY)
 
 # ============================
 # ข้อมูล Q&A คำร้องนักศึกษา
@@ -94,13 +94,16 @@ async def webhook(request: Request):
 def handle_message(event):
     user_message = event.message.text
     try:
-        response = gemini_client.models.generate_content(
-            model="gemini-2.0-flash-lite",
-            contents=f"{SYSTEM_PROMPT}\n\nคำถามของนักศึกษา: {user_message}"
+        response = groq_client.chat.completions.create(
+            model="llama-3.1-8b-instant",
+            messages=[
+                {"role": "system", "content": SYSTEM_PROMPT},
+                {"role": "user", "content": user_message}
+            ]
         )
-        reply_text = response.text.strip()
+        reply_text = response.choices[0].message.content.strip()
     except Exception as e:
-        print(f"[GEMINI ERROR] {type(e).__name__}: {e}")
+        print(f"[GROQ ERROR] {type(e).__name__}: {e}")
         reply_text = "ขออภัยครับ เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง หรือติดต่อเจ้าหน้าที่โดยตรง"
 
     line_bot_api.reply_message(
