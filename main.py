@@ -95,7 +95,7 @@ def handle_message(event):
     user_message = event.message.text
     try:
         response = gemini_client.models.generate_content(
-            model="gemini-2.0-flash",
+            model="gemini-2.0-flash-lite",
             contents=f"{SYSTEM_PROMPT}\n\nคำถามของนักศึกษา: {user_message}"
         )
         reply_text = response.text.strip()
