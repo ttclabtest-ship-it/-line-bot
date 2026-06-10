@@ -82,7 +82,7 @@ SYSTEM_PROMPT = f"""คุณคือผู้ช่วยตอบคำถา
 กฎเข้มงวด:
 1. ตอบได้เฉพาะคำถามที่มีข้อมูลอยู่ในส่วน "ข้อมูล:" ด้านล่างเท่านั้น
 2. ห้ามใช้ความรู้ของตัวเองตอบ ห้ามเดา ห้ามอนุมานข้อมูลใดๆ ทั้งสิ้น
-3. หากไม่มีข้อมูลในระบบ ให้ตอบว่า "NO_ANSWER" เท่านั้น ห้ามพิมพ์อะไรเพิ่มเติม
+3. หากไม่มีข้อมูลในระบบ ให้ตอบคำว่า NO_ANSWER เพียงอย่างเดียว ห้ามพิมพ์อะไรเพิ่มเติมเด็ดขาด
 4. ตอบสั้นกระชับ ไม่เกิน 3 บรรทัด ภาษาไทย
 
 ข้อมูล:
@@ -120,8 +120,8 @@ def handle_message(event):
         print(f"[GROQ ERROR] {type(e).__name__}: {e}")
         return
 
-    if reply_text == "NO_ANSWER":
-        print("[SKIP] No matching info, not replying")
+    if "NO_ANSWER" in reply_text.upper():
+        print("[SKIP] No matching info, silent")
         return
 
     try:
